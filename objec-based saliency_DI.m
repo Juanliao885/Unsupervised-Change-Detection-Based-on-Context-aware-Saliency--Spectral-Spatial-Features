@@ -1,14 +1,13 @@
 I1=imread('CubbieStation_im1.jpg');
 I2=imread('CubbieStation_im2.jpg');
-L=imread('CubbieStation_50.tif');L=L+1;%·Ö¸î½á¹û
+L=imread('CubbieStation_50.tif');L=L+1;
 img_d=sqrt((double(I2(:,:,1))-double(I1(:,:,1))).^2+(double(I2(:,:,2))-double(I1(:,:,2))).^2+(double(I2(:,:,3))-double(I1(:,:,3))).^2);
 ymax=255;ymin=0;
-xmax = max(max(img_d)); %ÇóµÃInImgÖĞµÄ×î´óÖµ
-xmin = min(min(img_d)); %ÇóµÃInImgÖĞµÄ×îĞ¡Öµ
-out_img_d= round((ymax-ymin)*(img_d-xmin)/(xmax-xmin) + ymin); %¹éÒ»»¯²¢È¡Õû
-%img = ind2rgb(gray2ind(uint8(Outimg_d),255),jet(255));»Ò¶È×ª»»ÎªÎ±²ÊÉ«¡£
-%[ segs ] = Msseg(img,11,13,100);% [ segs ] = Msseg( img,hs,hr,M ); hs:¿Õ¼ä´ø¿í  hr:·¶Î§Óò´ø¿í  M: ×îĞ¡³¬ÏñËØËù°üº¬µÄÏñËØ¸öÊı 
-%E:\document\liaojuan\change detection\20190909\²Î¿¼
+xmax = max(max(img_d)); 
+xmin = min(min(img_d)); 
+out_img_d= round((ymax-ymin)*(img_d-xmin)/(xmax-xmin) + ymin); 
+%img = ind2rgb(gray2ind(uint8(Outimg_d),255),jet(255));ç°åº¦è½¬æ¢ä¸ºä¼ªå½©è‰²ã€‚
+%[ segs ] = Msseg(img,11,13,100);% [ segs ] = Msseg( img,hs,hr,M ); hs:ç©ºé—´å¸¦å®½  hr:èŒƒå›´åŸŸå¸¦å®½  M: æœ€å°è¶…åƒç´ æ‰€åŒ…å«çš„åƒç´ ä¸ªæ•° 
 %Mimg=zeros(X*Y,Z);
 %img1=reshape(I1,X*Y,Z);
 %for i=1:size(segs.seg,2)
@@ -36,22 +35,19 @@ for i=1:nseg
      plot(i,1)=fix(sum_x/area);
      plot(i,2)=fix(sum_y/area);
 end
-%% Çó³¬ÏñËØ¹âÆ×Öµ
 Img{1}=img(:,:,1);Img{2}=img(:,:,2);Img{3}=img(:,:,3);
 for i=1:nseg
   ND_spe(i,1)=mean(Img{1}(find(L==i)));
   ND_spe(i,2)=mean(Img{2}(find(L==i)));
   ND_spe(i,3)=mean(Img{3}(find(L==i)));
 end
-%% ½¨Á¢ÏàÁÚ³¬ÏñËØ¶Ô
 vals = reshape(img,X*Y,Z);
 [points edges]=lattice(X,Y,0);    clear points;
 d_edges = edges(find(L(edges(:,1))~=L(edges(:,2))),:);
 all_seg_edges = [L(d_edges(:,1)) L(d_edges(:,2))]; all_seg_edges = sort(all_seg_edges,2);
 tmp = zeros(nseg,nseg);
 tmp(nseg*(all_seg_edges(:,1)-1)+all_seg_edges(:,2)) = 1;
-[edges_x edges_y] = find(tmp==1); seg_edges = [edges_x edges_y];%seg_edgesÓĞÎÊÌâ£¬Ã»ÓĞÕÒÍê
-%% KÁÚÓò
+[edges_x edges_y] = find(tmp==1); seg_edges = [edges_x edges_y];
 L1=seg_edges;
 for i=1:nseg
 a=seg_edges(L1(:,1)==i|L1(:,2)==i,:);
@@ -91,8 +87,7 @@ k4=length(A{i}{4}(:));
    A{i}{5}=unique([A{i}{5} a]);
     end
 end   
-%% k-ÁÚÓò¹âÆ×¾àÀë
-k=3;                                                                           %²ÎÊıK
+k=3;                                                                        
 ND_diss=[];
 for p=1:nseg
 e=A{p}{k};
@@ -109,8 +104,7 @@ for q=1:length(e)
 end
 ymax=1;ymin=0;
 DNxmax = max(ND_diss);DNxmin = min(ND_diss);
-ND_diss=(ymax-ymin)*(ND_diss-DNxmin)/(DNxmax-DNxmin) + ymin;%¹éÒ»»¯µ½¡¾0,1¡¿
-%% k-ÁÚÓò¿Õ¼ä¾àÀë
+ND_diss=(ymax-ymin)*(ND_diss-DNxmin)/(DNxmax-DNxmin) + ymin;%å½’ä¸€åŒ–åˆ°ã€0,1ã€‘
 SP_diss=[];
 for h=1:nseg
 e=A{h}{k};
@@ -126,17 +120,12 @@ end
    SP_diss=[SP_diss;sp_diss];
 end
 SPxmax = max(SP_diss);SPxmin = min(SP_diss);
-SP_diss=(ymax-ymin)*(SP_diss-SPxmin)/(SPxmax-SPxmin) + ymin;%¹éÒ»»¯µ½¡¾0,1¡¿
-%% ¹âÆ×Óë¿Õ¼äµÄ¹ØÏµ
-C=3;                                                                        %²ÎÊıC
+SP_diss=(ymax-ymin)*(SP_diss-SPxmin)/(SPxmax-SPxmin) + ymin;%å½’ä¸€åŒ–åˆ°ã€0,1ã€‘
+C=3;                                                             
 DISS=ND_diss./(1+C.*SP_diss);
-%% ³¬ÏñËØ×ª³ÉÏñËØ¼¶
 L_=L(:);
 for x=1:X*Y
-    img_ND_diss(x)=DISS(L_(x));%¹âÆ××ª
+    img_ND_diss(x)=DISS(L_(x));
 end  
 img_ND_diss=reshape(img_ND_diss,X,Y);
 imshow(img_ND_diss,[]);
-%% ãĞÖµ·Ö¸îOTUS
-T=graythresh(img_ND_diss);
-J=im2bw(img_ND_diss,T);
